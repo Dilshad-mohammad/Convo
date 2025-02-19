@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _messages.add(entity);
     setState(() {});
   }
-  final ImageRepository _imageRepository = ImageRepository();
+
   @override
   void initState() {
     _loadInitialMessages();
@@ -51,6 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final userName = ModalRoute.of(context)!.settings.arguments as String? ??
         AppState.userName;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: Text('Hi! $userName!'),
@@ -66,15 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          FutureBuilder<List<PixelFormImage>>(
-              future: _imageRepository.getNetworkImages(),
-              builder: (BuildContext context, AsyncSnapshot<List<PixelFormImage>> snapshot){
-                if (snapshot.hasData) {
-                  return Image.network(snapshot.data![0].downloadUrl);
-                }
 
-                return CircularProgressIndicator();
-              }),
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,

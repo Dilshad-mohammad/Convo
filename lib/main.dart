@@ -14,6 +14,7 @@ class Convo extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        canvasColor: Colors.transparent, // removes all background colors, to give bgColor manually to all pages.
         primarySwatch: Colors.deepPurple,//BrandColor.primaryColor,
         textTheme: Typography.blackHelsinki,
           appBarTheme: AppBarTheme(foregroundColor: Colors.black, backgroundColor: Colors.blueAccent),

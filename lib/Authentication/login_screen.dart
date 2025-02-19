@@ -29,12 +29,11 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(),
       body: Container(
         padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
           children: [
             Text('Let\'s Sign you in!',
                 textAlign: TextAlign.center,
@@ -42,18 +41,18 @@ class LoginScreen extends StatelessWidget {
             Text('Welcome back, You\'ve been missed!',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            verticalSpecing(12),
+            verticalSpecing(24),
+
             Container(
-              height: 50,
-              width: 100,
+              height: 200,
+              width: MediaQuery.of(context).size.width * 0.5,
               decoration: BoxDecoration(
-                  color: Colors.yellow,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Image.network(
-                  "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif",
-                  height: 100),
+                  image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                        image: NetworkImage("https://docs.flutter.dev/assets/images/dash/dash-fainting.gif")),
+                borderRadius: BorderRadius.circular(24)),
             ),
-            verticalSpecing(12),
+            verticalSpecing(24),
             Form(
               key: _formkey,
               child: Column(
@@ -69,7 +68,7 @@ class LoginScreen extends StatelessWidget {
             return null;},
 
                   ),
-                  verticalSpecing(24),
+                  verticalSpecing(18),
                   LoginTextField(
                     asteriks: true,
                     controller: passwordController,
@@ -90,6 +89,7 @@ class LoginScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 15),
                 )),
+            verticalSpecing(36),
             InkWell(
               onTap: () async {
                 if(!await launchUrlString(_mainurl)) {
@@ -103,6 +103,7 @@ class LoginScreen extends StatelessWidget {
                 ],
               ),
             ),
+            verticalSpecing(12),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
