@@ -1,9 +1,11 @@
 import 'package:convo/utils/spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media_buttons/social_media_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../chat/widgets/login_textfield.dart';
+import '../services/auth_service.dart';
 
 class AppState {
   static String userName = '';
@@ -14,9 +16,11 @@ class LoginScreen extends StatelessWidget {
 
   final _formkey = GlobalKey<FormState>();
 
-  void loginUser(BuildContext context) {
+ Future<void> loginUser(BuildContext context) async {
     if (_formkey.currentState != null && _formkey.currentState!.validate()) {
       AppState.userName = usernameController.text;
+
+      await context.read<AuthService>().loginUser(usernameController.text);
       Navigator.pushReplacementNamed(context, '/chat',
           arguments: usernameController.text);
     }
@@ -79,8 +83,8 @@ class LoginScreen extends StatelessWidget {
             ),
             verticalSpecing(24),
             OutlinedButton(
-                onPressed: () {
-                  loginUser(context);
+                onPressed: () async {
+                await loginUser(context);
                 },
                 child: Text(
                   'Login In',

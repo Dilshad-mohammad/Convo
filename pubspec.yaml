@@ -38,6 +38,8 @@ dependencies:
   social_media_buttons: ^1.0.0
   json_annotation: ^4.9.0
   http: any
+  provider: any
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:

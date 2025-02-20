@@ -2,6 +2,9 @@ import 'package:convo/chat/widgets/image_picker_body.dart';
 import 'package:convo/models/chat_message_entity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/auth_service.dart';
 
 class ChatInputField extends StatefulWidget {
   final Function(ChatMessageEntity) onSubmit;
@@ -17,7 +20,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   final chatMessageController = TextEditingController();
 
-  void sendButtonPressed() {
+  void sendButtonPressed() async {
+    String? userNameFromCache = await context.read<AuthService>().getUsername();
     if (kDebugMode) {
       print('ChatMessages: ${chatMessageController.text}');
 
@@ -27,7 +31,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
           createdAt: DateTime
               .now()
               .millisecondsSinceEpoch,
-          author: Author(userName: 'Dilshad'));
+          author: Author(userName: userNameFromCache!));
 
       if (_selectedImageUrl.isNotEmpty){
         newChatMessages.imageUrl = _selectedImageUrl;

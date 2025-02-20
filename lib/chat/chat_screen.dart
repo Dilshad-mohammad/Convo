@@ -5,8 +5,10 @@ import 'package:convo/chat/widgets/chat_input.dart';
 import 'package:convo/models/chat_message_entity.dart';
 import 'package:convo/models/image_model.dart';
 import 'package:convo/repo/image_repository.dart';
+import 'package:convo/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -48,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userName = ModalRoute.of(context)!.settings.arguments as String? ??
+    final userName = context.watch<AuthService>().getUsername();
         AppState.userName;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -60,6 +62,13 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
+              context.read<AuthService>().updateUserName('New Name');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthService>().logoutUser();
               Navigator.popAndPushNamed(context, '/');
             },
           )
@@ -74,7 +83,8 @@ class _ChatScreenState extends State<ChatScreen> {
               itemBuilder: (context, index) {
                 return ChatBubble(
                     entity: _messages[index],
-                    alignment: _messages[index].author.userName == 'Dilshad'
+                    alignment: _messages[index].author.userName ==
+                        context.read<AuthService>().getUsername()
                         ? Alignment.topRight
                         : Alignment.topLeft);
               },

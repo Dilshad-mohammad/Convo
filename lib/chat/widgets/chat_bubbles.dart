@@ -1,5 +1,7 @@
 import 'package:convo/models/chat_message_entity.dart';
+import 'package:convo/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class ChatBubble extends StatelessWidget {
@@ -12,7 +14,7 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isAuthor = entity.author.userName == 'Dilshad';
+    bool isAuthor = entity.author.userName == context.read<AuthService>().getUsername();
 
     return Align(
       alignment: alignment,
