@@ -1,11 +1,14 @@
 import 'package:convo/models/chat_message_entity.dart';
 import 'package:convo/services/auth_service.dart';
+import 'package:convo/utils/brand_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/helper_function.dart';
+
 
 class ChatBubble extends StatelessWidget {
-   ChatBubble({
+   const ChatBubble({
     super.key, required this.alignment, required this.entity,
   });
 
@@ -15,7 +18,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isAuthor = entity.author.userName == context.read<AuthService>().getUsername();
-
+    final dark = DHelperFunctions.isDarkMode(context);
     return Align(
       alignment: alignment,
       child: Container(
@@ -23,7 +26,7 @@ class ChatBubble extends StatelessWidget {
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: isAuthor ? Theme.of(context).primaryColor :  Colors.black54,
+          color: isAuthor ? Theme.of(context).primaryColor :  dark ? BrandColor.secondary : BrandColor.primaryAccent,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
@@ -33,7 +36,7 @@ class ChatBubble extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(entity.text),
+            Text(entity.text, style: TextStyle(color: dark ? BrandColor.textPrimary : BrandColor.black)),
             if(entity.imageUrl != null)
             Container(
               height: 200,

@@ -13,10 +13,10 @@ class ImageRepository{
       if (response.statusCode == 200) {
         final List<dynamic> decodedList = jsonDecode(response.body) as List;
 
-        final List<PixelFormImage> _imageList = decodedList.map((listItem) {
+        final List<PixelFormImage> imageList = decodedList.map((listItem) {
           return PixelFormImage.fromJson(listItem);
         }).toList();
-        return _imageList;
+        return imageList;
       } else {
         throw Exception('API not Successful');
       }

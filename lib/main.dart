@@ -1,5 +1,6 @@
 import 'package:convo/chat/chat_screen.dart';
 import 'package:convo/services/auth_service.dart';
+import 'package:convo/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Authentication/login_screen.dart';
@@ -17,16 +18,11 @@ class Convo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Convo',
+      themeMode: ThemeMode.system,
+      theme: D_vaultTheme.lightTheme,
+      darkTheme: D_vaultTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          canvasColor: Colors.transparent,
-          // removes all background colors, to give bgColor manually to all pages.
-          primarySwatch: Colors.deepPurple,
-          //BrandColor.primaryColor,
-          textTheme: Typography.blackHelsinki,
-          appBarTheme: AppBarTheme(
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.blueAccent)),
       home: FutureBuilder<bool>(
           future: context.read<AuthService>().isLoggedIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {

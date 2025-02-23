@@ -1,11 +1,12 @@
+import 'package:convo/Authentication/widgets/footer.dart';
+import 'package:convo/Authentication/widgets/header.dart';
+import 'package:convo/utils/brand_color.dart';
 import 'package:convo/utils/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_buttons/social_media_button.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-
 import '../chat/widgets/login_textfield.dart';
 import '../services/auth_service.dart';
+import '../utils/helper_function.dart';
 
 class AppState {
   static String userName = '';
@@ -28,34 +29,6 @@ class LoginScreen extends StatelessWidget {
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  final _mainurl = 'https://portfolio-six-tawny-60.vercel.app/';
-
-  Widget _buildHeader(context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Let\'s Sign you in!',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25)),
-        Text('Welcome back, You\'ve been missed!',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-        verticalSpecing(24),
-        Container(
-          height: 180,
-          width: MediaQuery.of(context).size.width * 0.5,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: NetworkImage(
-                      "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif")),
-              borderRadius: BorderRadius.circular(24)),
-        ),
-        verticalSpecing(24),
-      ],
-    );
-  }
 
   Widget _buildForm(context) {
     return Column(
@@ -67,7 +40,7 @@ class LoginScreen extends StatelessWidget {
             children: [
               LoginTextField(
                 controller: usernameController,
-                hintText: 'Add your Username',
+                hintText: 'Username',
                 validator: (value) {
                   if (value != null && value.isNotEmpty && value.length < 5) {
                     return 'Enter More than 5 Characters';
@@ -81,66 +54,38 @@ class LoginScreen extends StatelessWidget {
               LoginTextField(
                 asteriks: true,
                 controller: passwordController,
-                hintText: 'Enter your Password',
+                hintText: 'Password',
               ),
               verticalSpecing(24),
             ],
           ),
         ),
-        OutlinedButton(
-            onPressed: () async {
-              await loginUser(context);
-            },
-            child: Text(
-              'Login In',
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15),
-            )),
+        SizedBox(
+          height: 42,
+          child: ElevatedButton(onPressed: () async {
+                await loginUser(context);
+              },
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(BrandColor.primaryColor), // Correct way
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // Text color
+              ),
+              child: Text(
+                'Sign In',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+              )),
+        ),
       ],
     );
   }
 
-  Widget _buildFooter() {
-    return Column(
-      children: [
-        verticalSpecing(36),
-        InkWell(
-          onTap: () async {
-            if (!await launchUrlString(_mainurl)) {
-              throw 'could not launch url';
-            }
-          },
-          child: Column(
-            children: [
-              Text('Visit my Portfolio'),
-              Text(_mainurl),
-            ],
-          ),
-        ),
-        verticalSpecing(12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SocialMediaButton.github(
-                size: 30,
-                color: Colors.black,
-                url: 'https://github.com/Dilshad-mohammad'),
-            SocialMediaButton.linkedin(
-                size: 30,
-                color: Colors.blue,
-                url: 'https://www.linkedin.com/in/dilshad-alam3748/'),
-          ],
-        )
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final dark = DHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: dark ? BrandColor.dark : BrandColor.light,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(padding: EdgeInsets.all(12),
@@ -155,8 +100,8 @@ class LoginScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildHeader(context),
-                          _buildFooter(),
+                          Header(context: context),
+                          Footer(),
                         ],
                       ),
                     ),
@@ -170,9 +115,9 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildHeader(context),
+                Header(context: context),
                 _buildForm(context),
-                _buildFooter()
+                Footer()
 
               ],
             );
@@ -184,3 +129,5 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
+

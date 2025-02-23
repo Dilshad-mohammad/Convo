@@ -1,5 +1,7 @@
+import 'package:convo/utils/brand_color.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/helper_function.dart';
 import '../../utils/textfield_styles.dart';
 
 class LoginTextField extends StatelessWidget {
@@ -17,6 +19,7 @@ class LoginTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = DHelperFunctions.isDarkMode(context);
     return TextFormField(
       obscureText: asteriks,
       validator: (value) {
@@ -27,7 +30,9 @@ class LoginTextField extends StatelessWidget {
       decoration: InputDecoration(
           hintText: hintText,
           hintStyle: ThemeTextStyles.loginTextFieldStyle,
-          border: OutlineInputBorder()),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: dark ? BrandColor.secondary : Colors.black)
+          )),
     );
   }
 }
