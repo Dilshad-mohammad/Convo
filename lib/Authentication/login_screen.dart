@@ -8,28 +8,23 @@ import '../chat/widgets/login_textfield.dart';
 import '../services/auth_service.dart';
 import '../utils/helper_function.dart';
 
-class AppState {
-  static String userName = '';
-}
+class AppState {static String userName = '';}
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final _formkey = GlobalKey<FormState>();
-
   Future<void> loginUser(BuildContext context) async {
     if (_formkey.currentState != null && _formkey.currentState!.validate()) {
       AppState.userName = usernameController.text;
-
       await context.read<AuthService>().loginUser(usernameController.text);
-      Navigator.pushReplacementNamed(context, '/chat',
+      Navigator.pushReplacementNamed(context, '/chatlist',
           arguments: usernameController.text);
     }
   }
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
   Widget _buildForm(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,7 +75,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
@@ -91,7 +85,7 @@ class LoginScreen extends StatelessWidget {
           child: Padding(padding: EdgeInsets.all(12),
           child: LayoutBuilder(
             builder: (context, BoxConstraints constraints){
-              if(constraints.maxWidth > 1000){
+              if(constraints.maxWidth > 900){
                 // web Layout
                 return Row(
                   children: [

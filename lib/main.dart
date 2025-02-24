@@ -1,4 +1,4 @@
-import 'package:convo/chat/chat_screen.dart';
+import 'package:convo/chatlist/chatlist.dart';
 import 'package:convo/services/auth_service.dart';
 import 'package:convo/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +28,17 @@ class Convo extends StatelessWidget {
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData && snapshot.data!) {
-                return ChatScreen();
+                return ContactListScreen();
               } else {
                 return LoginScreen();
               }
             }
             return CircularProgressIndicator();
           }),
-      routes: {
-        '/chat': (context) => ChatScreen(),
-      },
+        routes: {
+          '/chatlist': (context) => ContactListScreen(),
+        }
+
     );
   }
 }

@@ -71,6 +71,7 @@ flutter:
 
   assets:
     - assets/mock_messages.json
+    - assets/mock_chatlist.json
     - assets/auth/
     - assets/fonts/
 

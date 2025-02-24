@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Dilshad",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "Ansh",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "xyz",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  },
+  {
+    "name": "john",
+    "profilePicUrl": "assets/auth/user_img.jpg",
+    "lastMessage": "Hey, how are you?"
+  }
+]
