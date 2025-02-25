@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:convo/utils/brand_color.dart';
 import 'package:flutter/services.dart';
+import 'package:convo/utils/search_container.dart';
+import 'package:convo/utils/brand_color.dart';
 import '../chat/chat_screen.dart';
 import '../models/contact_list_model.dart';
 import '../utils/helper_function.dart';
@@ -14,29 +15,39 @@ class ContactListScreen extends StatefulWidget {
 }
 
 class _ContactListScreenState extends State<ContactListScreen> {
-  // Initial state of the messages
   List<Contact> _contacts = [];
+  List<Contact> _filteredContacts = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContactlist();
+    _searchController.addListener(_filterContacts);
+  }
 
   _loadContactlist() async {
-    // Optionally, load messages for the given contact.
+    // Load JSON data
     rootBundle.loadString('assets/mock_chatlist.json').then((response) {
       final List<dynamic> decodedList = jsonDecode(response) as List;
-
-      final List<Contact> contactlists = decodedList.map((listItem) {
+      final List<Contact> contactLists = decodedList.map((listItem) {
         return Contact.fromJson(listItem);
       }).toList();
 
-      // Set the messages state
       setState(() {
-        _contacts = contactlists;
+        _contacts = contactLists;
+        _filteredContacts = _contacts; // Initially show all contacts
       });
     });
   }
 
-  @override
-  void initState() {
-    _loadContactlist();
-    super.initState();
+  void _filterContacts() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredContacts = _contacts
+          .where((contact) => contact.name.toLowerCase().contains(query))
+          .toList();
+    });
   }
 
   @override
@@ -48,32 +59,46 @@ class _ContactListScreenState extends State<ContactListScreen> {
         title: const Text('Contacts'),
         backgroundColor: BrandColor.primaryColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.separated(
-          separatorBuilder: (BuildContext context, index) { return Divider(); },
-          itemCount: _contacts.length,
-          itemBuilder: (context, index) {
-            final contact = _contacts[index];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(contact.profilePicUrl),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: "Search Contact",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              title: Text(contact.name),
-              subtitle: Text(contact.lastMessage),
-              onTap: () {
-                // Navigate to ChatScreen for the selected contact.
-                // You may want to pass the contact details to ChatScreen.
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatScreen(contact: contact),
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(),
+              itemCount: _filteredContacts.length,
+              itemBuilder: (context, index) {
+                final contact = _filteredContacts[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(contact.profilePicUrl),
                   ),
+                  title: Text(contact.name),
+                  subtitle: Text(contact.lastMessage),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(contact: contact),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
