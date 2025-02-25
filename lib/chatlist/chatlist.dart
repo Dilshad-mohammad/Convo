@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:convo/utils/search_container.dart';
 import 'package:convo/utils/brand_color.dart';
 import '../chat/chat_screen.dart';
 import '../models/contact_list_model.dart';
