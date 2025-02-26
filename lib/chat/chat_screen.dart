@@ -22,6 +22,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   // Initial state of the messages
   List<ChatMessageEntity> _messages = [];
+  final ScrollController _scrollController = ScrollController(); // ScrollController added
 
   _loadInitialMessages() async {
     // Optionally, load messages for the given contact.
@@ -36,18 +37,34 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         _messages = chatMessages;
       });
+      _scrollToBottom(); // Scroll down after loading messages
     });
   }
 
   onMessageSent(ChatMessageEntity entity) {
-    _messages.add(entity);
-    setState(() {});
+
+    setState(() {
+      _messages.add(entity);
+    });
+    _scrollToBottom();
   }
 
   @override
   void initState() {
     _loadInitialMessages();
     super.initState();
+  }
+
+  void _scrollToBottom() {
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -87,6 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               padding: const EdgeInsets.all(24),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
