@@ -45,9 +45,14 @@ class ChatBubble extends StatelessWidget {
                     bottomRight: Radius.circular(10))),
         child: Column(
           children: [
-            Text(entity.text,
-                style: TextStyle(
-                    color: dark ? BrandColor.textPrimary : BrandColor.black)),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Text(entity.text,
+                  style: TextStyle(
+                    fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: dark ? BrandColor.textPrimary : BrandColor.black)),
+            ),
             if (entity.imageUrl != null)
               Container(
                 height: 180,
