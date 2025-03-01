@@ -18,34 +18,45 @@ class ChatInputField extends StatefulWidget {
 }
 
 class _ChatInputFieldState extends State<ChatInputField> {
-  String _selectedImageUrl = '';
+  String? _selectedImageUrl;
+  final TextEditingController chatMessageController = TextEditingController();
 
-  final chatMessageController = TextEditingController();
+  /// Sends the message when the send button is pressed
+  Future<void> sendButtonPressed() async {
+    try {
+      final authService = context.read<AuthService>();
+      String? userNameFromCache = await authService.getUsername();
+      userNameFromCache ??= 'Guest'; // Fallback if username is null
 
-  void sendButtonPressed() async {
-    String? userNameFromCache = await context.read<AuthService>().getUsername();
-    if (kDebugMode) {
-      print('ChatMessages: ${chatMessageController.text}');
-
-      final newChatMessages = ChatMessageEntity(
-          text: chatMessageController.text,
-          id: '243',
-          createdAt: DateTime
-              .now()
-              .millisecondsSinceEpoch,
-          author: Author(userName: userNameFromCache!));
-
-      if (_selectedImageUrl.isNotEmpty){
-        newChatMessages.imageUrl = _selectedImageUrl;
+      if (chatMessageController.text.trim().isEmpty && _selectedImageUrl == null) {
+        if (kDebugMode) print("Empty message not sent");
+        return; // Prevents sending empty messages
       }
-      widget.onSubmit(newChatMessages);
 
-      chatMessageController.clear();
-      _selectedImageUrl = '';
-      setState(() {});
+      final newChatMessage = ChatMessageEntity(
+        text: chatMessageController.text.trim(),
+        id: DateTime.now().millisecondsSinceEpoch.toString(), // Unique ID
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        author: Author(userName: userNameFromCache),
+        imageUrl: _selectedImageUrl,
+      );
+
+      widget.onSubmit(newChatMessage);
+
+      if (mounted) {
+        setState(() {
+          chatMessageController.clear();
+          _selectedImageUrl = null;
+        });
+      }
+
+      if (kDebugMode) print("Message Sent: ${newChatMessage.text}");
+    } catch (e) {
+      if (kDebugMode) print('Error in sendButtonPressed: $e');
     }
   }
 
+  /// Handles image selection
   void onImagePicked(String newImageUrl) {
     setState(() {
       _selectedImageUrl = newImageUrl;
@@ -56,25 +67,30 @@ class _ChatInputFieldState extends State<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
+
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: BrandColor.primaryBackground,
         borderRadius: BorderRadius.vertical(top: Radius.circular(13)),
       ),
       child: Container(
         color: BrandColor.primaryColor,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(onPressed: () {
-              showModalBottomSheet(context: context,
-                  builder: (BuildContext context){
-                return NetworkImagePickerBody(onImageSelected: onImagePicked,);
+            // Image Picker Button
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => NetworkImagePickerBody(onImageSelected: onImagePicked),
+                );
+              },
+              icon: const Icon(Icons.add),
+            ),
 
-              });
-            }, icon: Icon(Icons.add)),
+            // Chat Input Field
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,25 +98,34 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   TextField(
                     keyboardType: TextInputType.multiline,
                     textCapitalization: TextCapitalization.sentences,
-                    maxLines: 4,
-                    minLines: 1,
+                    maxLines: null, // Allows dynamic text expansion
                     controller: chatMessageController,
                     decoration: InputDecoration(
-                      border: InputBorder.none, // Removes all borders
-                      enabledBorder: InputBorder.none, // Removes enabled state border
-                      focusedBorder: InputBorder.none, // Removes focus border
-                      disabledBorder: InputBorder.none, // Removes disabled state border
-                      hintText: 'Enter your message',
-                      hintStyle: TextStyle(color: dark ? BrandColor.light : BrandColor.dark), // Ensures hint visibility
-                      contentPadding: EdgeInsets.zero, // Removes extra padding
+                      border: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      hintText: 'Enter your message...',
+                      hintStyle: TextStyle(color: dark ? BrandColor.light : BrandColor.dark),
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                  if (_selectedImageUrl.isNotEmpty)
-                    Image.network(_selectedImageUrl, height: 50),
+                  if (_selectedImageUrl != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Image.network(_selectedImageUrl!, height: 50),
+                    ),
                 ],
               ),
             ),
-            IconButton(onPressed: sendButtonPressed, icon: Icon(Icons.send_outlined)),
+
+            // Send Button
+            IconButton(
+              onPressed: sendButtonPressed,
+              icon: const Icon(Icons.send_outlined),
+            ),
           ],
         ),
       ),
